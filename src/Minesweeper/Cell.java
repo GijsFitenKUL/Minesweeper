@@ -1,4 +1,5 @@
 package Minesweeper;
+import Minesweeper.Board;
 
 public class Cell implements CellInterface {
     private int neighbours;
