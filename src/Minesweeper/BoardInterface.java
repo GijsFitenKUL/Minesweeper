@@ -12,4 +12,5 @@ public interface BoardInterface {
    ArrayList<Cell> getCurrentState();
    void setCurrentState(ArrayList<Cell> newBoard);
    int getCellPosition(Cell c);
+   int getCellNeighbours(Cell c);
 }

@@ -66,4 +66,21 @@ public class Board implements BoardInterface{
         }
         return -1;
     }
+
+    @Override
+    public int getCellNeighbours(Cell c) {
+        int neighbours = 0;
+        int pos = getCellPosition(c);
+
+        if(currentBoard.get(pos + 1) instanceof Bomb){neighbours++;}
+        if(currentBoard.get(pos + 1) instanceof Bomb){neighbours++;}
+        if(currentBoard.get(pos + this.getWidth()) instanceof Bomb)){neighbours++;}
+        if(currentBoard.get(pos + this.getWidth() + 1) instanceof Bomb){neighbours++;}
+        if(currentBoard.get(pos + this.getWidth() - 1) instanceof Bomb){neighbours++;}
+        if(currentBoard.get(pos + this.getHeight()) instanceof Bomb){neighbours++;}
+        if(currentBoard.get(pos + this.getHeight() + 1) instanceof Bomb){neighbours++;}
+        if(currentBoard.get(pos + this.getHeight() - 1) instanceof Bomb){neighbours++;}
+
+        return neighbours;
+    }
 }
