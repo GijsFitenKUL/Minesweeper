@@ -6,16 +6,18 @@ public class Board implements BoardInterface{
     private int Width;
     private int Height;
     private int nrOfBombs;
+    private ArrayList<Integer> currentBoard;
 
     public Board(int Width, int Height, int nrOfBombs){
         this.Width = Width;
         this.Height = Height;
         this.nrOfBombs = nrOfBombs;
+        this.currentBoard = new ArrayList<Integer>(Height * Width);
     }
 
     @Override
     public int getWidth() {
-        return 0;
+        return this.Width;
     }
 
     @Override
@@ -25,7 +27,7 @@ public class Board implements BoardInterface{
 
     @Override
     public int getHeight() {
-        return 0;
+        return this.Height;
     }
 
     @Override
@@ -35,7 +37,7 @@ public class Board implements BoardInterface{
 
     @Override
     public int getNrOfBombs() {
-        return 0;
+        return this.nrOfBombs;
     }
 
     @Override
@@ -44,8 +46,8 @@ public class Board implements BoardInterface{
     }
 
     @Override
-    public ArrayList<ArrayList<Integer>> getCurrentState() {
-        return null;
+    public ArrayList<Integer> getCurrentState() {
+        return this.currentBoard;
     }
 
     @Override

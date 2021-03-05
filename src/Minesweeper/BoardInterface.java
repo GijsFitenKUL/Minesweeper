@@ -9,6 +9,6 @@ public interface BoardInterface {
    void setHeight(int Height);
    int getNrOfBombs();
    void setNrOfBombs(int nrOfBombs);
-   ArrayList<ArrayList<Integer>> getCurrentState();
+   ArrayList<Integer> getCurrentState();
    void setCurrentState();
 }
