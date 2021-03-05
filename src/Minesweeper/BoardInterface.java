@@ -3,13 +3,12 @@ package Minesweeper;
 import java.util.ArrayList;
 
 public interface BoardInterface {
-   void initialise();
    int getWidth();
-   void setWidth();
+   void setWidth(int Width);
    int getHeight();
-   void setHeight();
+   void setHeight(int Height);
    int getNrOfBombs();
-   void setNrOfBombs();
+   void setNrOfBombs(int nrOfBombs);
    ArrayList<ArrayList<Integer>> getCurrentState();
    void setCurrentState();
 }
