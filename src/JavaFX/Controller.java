@@ -1,4 +1,4 @@
-package sample;
+package JavaFX;
 
 public class Controller {
 }
