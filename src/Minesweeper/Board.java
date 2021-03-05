@@ -6,7 +6,7 @@ public class Board implements BoardInterface{
     private int Width;
     private int Height;
     private int nrOfBombs;
-    private ArrayList<Cell> currentBoard;
+    public ArrayList<Cell> currentBoard;
 
     public Board(int Width, int Height, int nrOfBombs){
         this.Width = Width;
@@ -53,5 +53,17 @@ public class Board implements BoardInterface{
     @Override
     public void setCurrentState(ArrayList<Cell> newBoard) {
         this.currentBoard = newBoard;
+    }
+
+    @Override
+    public int getCellPosition(Cell c) {
+        int j = 0;
+        for(Cell i:currentBoard){
+            if(i.equals(c)){
+                return j;
+            }
+            j++;
+        }
+        return -1;
     }
 }

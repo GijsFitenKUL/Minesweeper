@@ -11,4 +11,5 @@ public interface BoardInterface {
    void setNrOfBombs(int nrOfBombs);
    ArrayList<Cell> getCurrentState();
    void setCurrentState(ArrayList<Cell> newBoard);
+   int getCellPosition(Cell c);
 }
