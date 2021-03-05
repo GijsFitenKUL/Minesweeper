@@ -74,7 +74,7 @@ public class Board implements BoardInterface{
 
         if(currentBoard.get(pos + 1) instanceof Bomb){neighbours++;}
         if(currentBoard.get(pos + 1) instanceof Bomb){neighbours++;}
-        if(currentBoard.get(pos + this.getWidth()) instanceof Bomb)){neighbours++;}
+        if(currentBoard.get(pos + this.getWidth()) instanceof Bomb){neighbours++;}
         if(currentBoard.get(pos + this.getWidth() + 1) instanceof Bomb){neighbours++;}
         if(currentBoard.get(pos + this.getWidth() - 1) instanceof Bomb){neighbours++;}
         if(currentBoard.get(pos + this.getHeight()) instanceof Bomb){neighbours++;}
