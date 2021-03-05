@@ -1,7 +1,5 @@
 package Minesweeper;
 
-//hey
-// hallokes
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Arrays;
