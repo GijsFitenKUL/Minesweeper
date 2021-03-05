@@ -1,7 +1,5 @@
 package Minesweeper;
 
-//hey
-// hallokes
 import java.util.ArrayList;
 
 public class Board implements BoardInterface{
