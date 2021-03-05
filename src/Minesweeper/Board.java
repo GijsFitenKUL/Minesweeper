@@ -1,5 +1,5 @@
 package Minesweeper;
 
 public class Board implements BoardInterface{
-    test
+    //zie je dit gijs?
 }
