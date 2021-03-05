@@ -51,7 +51,7 @@ public class Board implements BoardInterface{
     }
 
     @Override
-    public void setCurrentState() {
-
+    public void setCurrentState(ArrayList<Integer> newBoard) {
+        this.currentBoard = newBoard;
     }
 }
