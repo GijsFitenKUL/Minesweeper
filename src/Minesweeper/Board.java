@@ -79,10 +79,12 @@ public class Board implements BoardInterface{
             }
         }
         this.firstClickMade = true;
+        System.out.println("First move made");
     }
 
     @Override
     public boolean makeMove(int x, int y) {
+        System.out.println("Making move");
         //get index from x and y coords
         int index = y * this.Width + x;
 
@@ -101,7 +103,11 @@ public class Board implements BoardInterface{
         }
 
         //reveal all connected cells that arent bombs.
-        return revealBoardFromCell(x, y);
+        revealBoardFromCell(x, y);
+        System.out.println("Move Made");
+
+        this.consolePrintBoard();
+        return true;
     }
 
     //fucking recursie, anders wordt dit moeilijk.
