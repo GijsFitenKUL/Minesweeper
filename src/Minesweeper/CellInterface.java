@@ -6,4 +6,6 @@ public interface CellInterface {
     void reveal();
     boolean isHidden();
     void unsetFlag();
+    void setNeighbours(int n);
+    int getNeighbours();
 }

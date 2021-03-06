@@ -13,4 +13,5 @@ public interface BoardInterface {
    void setCurrentState(ArrayList<Cell> newBoard);
    int getCellPosition(Cell c);
    int getCellNeighbours(Cell c);
+   void firstClick(int index);
 }

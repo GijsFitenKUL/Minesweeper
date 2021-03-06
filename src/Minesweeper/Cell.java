@@ -35,4 +35,14 @@ public class Cell implements CellInterface {
     public void unsetFlag() {
         this.isFlag = false;
     }
+
+    @Override
+    public void setNeighbours(int n) {
+        this.neighbours = n;
+    }
+
+    @Override
+    public int getNeighbours() {
+        return this.neighbours;
+    }
 }

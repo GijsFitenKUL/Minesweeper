@@ -9,20 +9,23 @@ public class Board implements BoardInterface{
     private int Height;
     private int nrOfBombs;
     public ArrayList<Cell> currentBoard;
-    private int[] randomXPostition;
-    private int[] randomYPosition;
+    // private int[] randomXPostition;
+    // private int[] randomYPosition;
 
+    //Class constructor, will have Initialise added later!
     public Board(int Width, int Height, int nrOfBombs){
         this.Width = Width;
         this.Height = Height;
         this.nrOfBombs = nrOfBombs;
         this.currentBoard = new ArrayList<Cell>(Height * Width);
-        randomYPosition = new int[Height];
-        randomXPostition = new int[Width];
+        // randomYPosition = new int[Height];
+        // randomXPostition = new int[Width];
+
+        initialise();
     }
 
     //initialize and shuffleArray() moeten ng getest worden
-    public void initialize(){
+/*    public void initialize(){
         for(int i = 0; i < getNrOfBombs(); i++){
             randomXPostition[i] = i;
             randomYPosition[i] = i;
@@ -39,8 +42,65 @@ public class Board implements BoardInterface{
             array[randomIndex] = array[i];
             array[i] = tempValue;
         }
+    }*/
+
+    //Iets kortere en efficientere implementatie van de initialise :)
+    private void initialise(){
+        int i = 0;
+        Random r = new Random();
+
+        while(i < this.nrOfBombs){
+            int index = r.nextInt(this.Width * this.Height);
+            if(!(currentBoard.get(index) instanceof Bomb)){
+                Bomb b = new Bomb();
+                currentBoard.set(index, b);
+                i++;
+            }
+        }
+
+        for(int i = 0; i < this.Width * this.Height; i++){
+            if(!(currentBoard.get(i) instanceof Bomb)){
+                Cell c = new Cell();
+                currentBoard.set(i, c);
+            }
+        }
+
+        updateBoard();
     }
 
+    //Update num of neighbours for all cells in the current board
+    private void updateBoard(){
+        for(Cell c : currentBoard){
+            c.setNeighbours(getCellNeighbours(c));
+        }
+    }
+
+    //handles the first click, and changes the board accordingly.
+    //It chooses a new random index if the first click lands on a bomb.
+    @Override
+    public void firstClick(int index){
+        if(currentBoard.get(index) instanceof Bomb){
+            Random r = new Random();
+            boolean i = true;
+
+            while(i){
+                int newIndex = r.nextInt(this.Width * this.Height);
+                if(!(currentBoard.get(newIndex) instanceof Bomb)){
+                    //ye olde switcharoo
+                    Cell c = currentBoard.get(newIndex);
+                    Cell b = currentBoard.get(index);
+
+                    currentBoard.set(newIndex, b);
+                    currentBoard.set(index, c);
+                    updateBoard();
+                    i = false;
+                }
+            }
+        }
+    }
+
+
+    //Just getters and setters
     @Override
     public int getWidth() {
         return this.Width;
@@ -81,22 +141,21 @@ public class Board implements BoardInterface{
         this.currentBoard = newBoard;
     }
 
+    //Returns the position in the board array of the given cell, returns -1 if cell is not found.
     @Override
     public int getCellPosition(Cell c) {
-        int j = 0;
-        for(Cell i:currentBoard){
-            if(i.equals(c)){
-                return j;
-            }
-            j++;
+        if(currentBoard.contains(c)){
+            return currentBoard.indexOf(c);
         }
         return -1;
     }
 
+    //Returns the amount of neighbours a cell has which are bombs, returns -1 if the cell is not found.
     @Override
     public int getCellNeighbours(Cell c) {
         int neighbours = 0;
         int pos = getCellPosition(c);
+        if(pos == -1){return -1;}
 
         if(currentBoard.get(pos + 1) instanceof Bomb){neighbours++;}
         if(currentBoard.get(pos + 1) instanceof Bomb){neighbours++;}
