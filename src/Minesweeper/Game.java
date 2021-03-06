@@ -1,21 +1,10 @@
 package Minesweeper;
 
 public class Game implements GameInterface{
-    public int width;
-    public int height;
-    public int nrOfBombs;
-    private Board gameBoard;
+    private final Board gameBoard;
 
     public Game(int width, int height, int nrOfBombs){
         this.gameBoard = new Board(width, height, nrOfBombs);
-        gameBoard.consolePrintBoard();
-    }
-
-
-    public static void main(String[] args) {
-        Game newGame = new Game(20, 5, 50);
-        newGame.makeMove(4, 3);
-        newGame.makeMove(16, 4);
     }
 
     @Override
@@ -26,5 +15,20 @@ public class Game implements GameInterface{
     @Override
     public void setFlag(int x, int y) {
         this.gameBoard.setFlag(x, y);
+    }
+
+    @Override
+    public char getCellContent(int x, int y) {
+        return this.gameBoard.getCellContent(x, y);
+    }
+
+    @Override
+    public boolean hasWon() {
+        return this.gameBoard.hasWon();
+    }
+
+    @Override
+    public boolean hasLost() {
+        return this.gameBoard.hasLost();
     }
 }

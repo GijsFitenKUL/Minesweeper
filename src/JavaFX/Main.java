@@ -1,22 +1,23 @@
 package JavaFX;
 
+import Minesweeper.Game;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 public class Main extends Application {
 
     Stage window;
-    Scene startingscreen, gamescreen;
+    Scene startingScreen, gameScreen;
     @Override
     public void start(Stage primaryStage) {
         window = primaryStage;
@@ -46,55 +47,140 @@ public class Main extends Application {
 
         startingGrid.getChildren().addAll(gameWidth, widthField, gameHeight, heightField, gameBombs, bombsField, startGame);
 
-        startGame.setOnAction(new EventHandler<ActionEvent>() {
+        startGame.setOnAction(e -> {
+            if ((widthField.getText() != null && !widthField.getText().isEmpty())) {
+                if((heightField.getText() != null && !heightField.getText().isEmpty())){
+                    int width = Integer.parseInt(widthField.getText());
+                    int height = Integer.parseInt(heightField.getText());
+                    int nrBombs = Integer.parseInt(bombsField.getText());
 
-            @Override
-            public void handle(ActionEvent e) {
-                if ((widthField.getText() != null && !widthField.getText().isEmpty())) {
-                    if((heightField.getText() != null && !heightField.getText().isEmpty())){
-                        int width = Integer.parseInt(widthField.getText());
-                        int height = Integer.parseInt(heightField.getText());
+                    if(width < 5 || width > 25){return;}
+                    if(height < 5 || height > 25){return;}
+                    if(nrBombs >= width * height){return;}
 
-                        int xDim = width * 40;
-                        int yDim = height * 40;
+                    int xDim = width * 40;
+                    int yDim = height * 40;
 
-                        GridPane gameGrid = new GridPane();
-                        gameGrid.setPadding(new Insets(0, 0, 0, 0));
-                        gameGrid.setVgap(0);
-                        gameGrid.setHgap(0);
+                    GridPane gameGrid = new GridPane();
+                    gameGrid.setPadding(new Insets(0, 0, 0, 0));
+                    gameGrid.setVgap(0);
+                    gameGrid.setHgap(0);
 
-                        Image hidden = new Image("Images/Hidden.png");
-                        Image zero = new Image("Images/0.png");
-                        Image one = new Image("Images/1.png");
-                        Image two = new Image("Images/2.png");
-                        Image three = new Image("Images/3.png");
-                        Image four = new Image("Images/4.png");
-                        Image five = new Image("Images/5.png");
-                        Image six = new Image("Images/6.png");
-                        Image seven = new Image("Images/7.png");
-                        Image eight = new Image("Images/8.png");
-                        Image flag = new Image("Images/flagged.png");
-                        Image bomb = new Image("Images/bomb.png");
+                    Image hidden = new Image("Images/Hidden.png");
+                    Image zero = new Image("Images/0.png");
+                    Image one = new Image("Images/1.png");
+                    Image two = new Image("Images/2.png");
+                    Image three = new Image("Images/3.png");
+                    Image four = new Image("Images/4.png");
+                    Image five = new Image("Images/5.png");
+                    Image six = new Image("Images/6.png");
+                    Image seven = new Image("Images/7.png");
+                    Image eight = new Image("Images/8.png");
+                    Image flag = new Image("Images/flagged.png");
+                    Image bomb = new Image("Images/bomb.png");
 
-                        for(int xIndex = 0 ;xIndex < width; xIndex++){
-                            for(int yIndex = 0; yIndex < height; yIndex++){
-                                ImageView i = new ImageView(hidden);
-                                GridPane.setConstraints(i, xIndex, yIndex);
-                                gameGrid.getChildren().add(i);
+                    for(int xIndex = 0 ;xIndex < width; xIndex++){
+                        for(int yIndex = 0; yIndex < height; yIndex++){
+                            ImageView i = new ImageView(hidden);
+                            GridPane.setConstraints(i, xIndex, yIndex);
+                            gameGrid.getChildren().add(i);
+                        }
+                    }
+
+                    Game playingGame = new Game(width, height, nrBombs);
+
+                    gameGrid.setOnMouseClicked(mouseEvent -> {
+                        int mouseX = (int) mouseEvent.getSceneX();
+                        int mouseY = (int) mouseEvent.getSceneY();
+
+                        int xCell = mouseX / 40;
+                        int yCell = mouseY / 40;
+
+                        if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+
+                            playingGame.makeMove(xCell, yCell);
+                            playingGame.makeMove(4, 3);
+
+                        } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
+                            playingGame.setFlag(xCell, yCell);
+                        }
+
+                        for (int xIndex = 0; xIndex < width; xIndex++) {
+                            for (int yIndex = 0; yIndex < height; yIndex++) {
+
+                                char content = playingGame.getCellContent(xIndex, yIndex);
+                                ImageView cellImage = null;
+
+                                if (content == 'b') {
+                                    cellImage = new ImageView(bomb);
+                                }
+                                if (content == 'h') {
+                                    cellImage = new ImageView(hidden);
+                                }
+                                if (content == 'f') {
+                                    cellImage = new ImageView(flag);
+                                }
+                                if (content == '1') {
+                                    cellImage = new ImageView(one);
+                                }
+                                if (content == '2') {
+                                    cellImage = new ImageView(two);
+                                }
+                                if (content == '3') {
+                                    cellImage = new ImageView(three);
+                                }
+                                if (content == '4') {
+                                    cellImage = new ImageView(four);
+                                }
+                                if (content == '5') {
+                                    cellImage = new ImageView(five);
+                                }
+                                if (content == '6') {
+                                    cellImage = new ImageView(six);
+                                }
+                                if (content == '7') {
+                                    cellImage = new ImageView(seven);
+                                }
+                                if (content == '8') {
+                                    cellImage = new ImageView(eight);
+                                }
+                                if (content == '0') {
+                                    cellImage = new ImageView(zero);
+                                }
+
+                                GridPane.setConstraints(cellImage, xIndex, yIndex);
+                                gameGrid.getChildren().add(cellImage);
                             }
                         }
-                        gamescreen = new Scene(gameGrid, xDim, yDim);
-                        window.setScene(gamescreen);
+
+                        if (playingGame.hasLost()) {
+                            Alert alert = new Alert(Alert.AlertType.WARNING);
+                            alert.setTitle("Game Lost");
+                            alert.setHeaderText("You lost the game");
+                            alert.setContentText("Oops, you clicked on a bomb! Restart the program to try again");
+
+                            alert.showAndWait();
+                        }
+
+                        if (playingGame.hasWon()) {
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                            alert.setTitle("Game Won");
+                            alert.setHeaderText("You Won the game!");
+                            alert.setContentText("Great job! If you want a bigger challenge, restart the program and increase the size and number of bombs!");
+
+                            alert.showAndWait();
+                        }
+                    });
+
+                    gameScreen = new Scene(gameGrid, xDim, yDim);
+                    window.setScene(gameScreen);
                     }
                 }
-            }
-        });
+            });
 
-        //layout startingscreen
-        startingscreen = new Scene(startingGrid, 300, 150);
+        startingScreen = new Scene(startingGrid, 300, 150);
 
-
-        window.setScene(startingscreen);
+        window.setScene(startingScreen);
         window.setTitle("Minesweeper");
         window.show();
     }

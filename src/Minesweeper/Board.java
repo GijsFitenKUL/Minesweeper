@@ -1,14 +1,15 @@
 package Minesweeper;
-//als dit kan lezen werkt het pushen :)
 import java.util.ArrayList;
 import java.util.Random;
 
 public class Board implements BoardInterface{
-    private int Width;
-    private int Height;
-    private int nrOfBombs;
+    private final int Width;
+    private final int Height;
+    private final int nrOfBombs;
     private boolean firstClickMade;
     public ArrayList<Cell> currentBoard;
+    private boolean hasWon = false;
+    private boolean hasLost = false;
 
     //Class constructor
     public Board(int Width, int Height, int nrOfBombs){
@@ -42,11 +43,8 @@ public class Board implements BoardInterface{
                 i++;
             }
         }
-
-        System.out.println("Bombs succesfully placed");
-
+        //Updates cell values of nr of neighbours
         updateNeighbours();
-        System.out.println("Cell neighbours succesfully updated");
     }
 
     //Update num of neighbours for all cells in the current board
@@ -83,14 +81,13 @@ public class Board implements BoardInterface{
     }
 
     @Override
-    public boolean makeMove(int x, int y) {
+    public void makeMove(int x, int y) {
         System.out.println("Making move");
-        //get index from x and y coords
         int index = y * this.Width + x;
 
         //check if cell is still hidden
         if(!this.currentBoard.get(index).isHidden())
-            return false;
+            return;
 
         //check if this is the first move
         if(!this.firstClickMade){
@@ -100,19 +97,31 @@ public class Board implements BoardInterface{
         //Gameover if you hit a bomb
         if(this.currentBoard.get(index) instanceof Bomb){
             this.revealAllBombs();
-            ((Bomb) this.currentBoard.get(index)).gameOver();
+            hasLost = ((Bomb) this.currentBoard.get(index)).gameOver();
         }
 
-        //reveal all connected cells that arent bombs.
+        //reveal all connected cells that arent bombs. then checks for win conditions
         revealBoardFromCell(x, y);
-        System.out.println("Move Made");
+        testForWin();
+    }
 
-        this.consolePrintBoard();
-        return true;
+    //tests all win condition:
+    // - All non bomb cells are not hidden
+    // - No non bomb cells are flagged
+    // - All bombs are flagged.
+    private void testForWin() {
+        for(Cell c : currentBoard){
+            if(c.isHidden() && !c.isBomb()){return;}
+            if(c.isFlag() && !c.isBomb()){return;}
+            if(!c.isFlag() && c.isBomb()){return;}
+        }
+        hasWon = true;
     }
 
     //fucking recursie, anders wordt dit moeilijk.
     //Ik hoop zo hard dat dit werkt lmao
+    //Zou alle aangesloten cell moeten vrijgeven, stopt aan de randen van het bord en aan bommen
+    //Werkt niet diagonaal nu, leek me iets te makkelijk
     private void revealBoardFromCell(int x, int y){
         if(x >= this.Width){return;}
         if(y >= this.Height){return;}
@@ -136,47 +145,6 @@ public class Board implements BoardInterface{
         }
     }
 
-
-    //Just getters and setters
-    @Override
-    public int getWidth() {
-        return this.Width;
-    }
-
-    @Override
-    public void setWidth(int Width) {
-        this.Width = Width;
-    }
-
-    @Override
-    public int getHeight() {
-        return this.Height;
-    }
-
-    @Override
-    public void setHeight(int Height) {
-        this.Height = Height;
-    }
-
-    @Override
-    public int getNrOfBombs() {
-        return this.nrOfBombs;
-    }
-
-    @Override
-    public void setNrOfBombs(int nrOfBombs) {
-        this.nrOfBombs = nrOfBombs;
-    }
-
-    @Override
-    public ArrayList<Cell> getCurrentState() {
-        return this.currentBoard;
-    }
-
-    @Override
-    public void setCurrentState(ArrayList<Cell> newBoard) {
-        this.currentBoard = newBoard;
-    }
 
     //Returns the position in the board array of the given cell, returns -1 if cell is not found.
     @Override
@@ -280,36 +248,37 @@ public class Board implements BoardInterface{
         return neighbours;
     }
 
-    //Prints a single Row of the board to the console sorry for the typecasting lmao
-    private void consolePrintBoardLine(int row){
-        char character;
-        char[] RowArray = new char[this.Width * 3];
-
-        for(int i = row * Width; i < row * this.Width + this.Width; i++){
-            if(this.currentBoard.get(i).isFlag()){character = 'F';}
-            else if(this.currentBoard.get(i).isHidden()){character = 'X';}
-            else if(this.currentBoard.get(i) instanceof Bomb){ character = 'B'; }
-            else{character = (char)(this.currentBoard.get(i).getNeighbours()+'0');}
-            RowArray[(i - row*this.Width) * 3] = character;
-            RowArray[(i - row*this.Width) * 3 + 1] = ' ';
-            RowArray[(i - row*this.Width) * 3 + 2] = ' ';
-        }
-
-        System.out.println(RowArray);
-    }
-
-    //prints the board to console.
-    @Override
-    public void consolePrintBoard(){
-        for(int i = 0; i < this.Height; i++){
-            consolePrintBoardLine(i);
-            System.out.println();
-        }
-    }
-
+    //sets a flag at the gicen coordinates. Also test for win conditions
     @Override
     public void setFlag(int x, int y) {
         int index = y * this.Width + x;
-        this.currentBoard.get(index).setFlag();
+        if(this.currentBoard.get(index).isFlag()){this.currentBoard.get(index).unsetFlag();}
+        else{this.currentBoard.get(index).setFlag();}
+        testForWin();
+    }
+
+    //returns a character resembling the content of the cell that should be shown on screen
+    @Override
+    public char getCellContent(int x, int y) {
+        int index = y * this.Width + x;
+        char content;
+        if(this.currentBoard.get(index).isFlag()){content = 'f';}
+        else if(this.currentBoard.get(index).isHidden()){content = 'h';}
+        else if(this.currentBoard.get(index) instanceof Bomb){content = 'b'; }
+        else{content = (char)(this.currentBoard.get(index).getNeighbours()+'0');}
+        return content;
+    }
+
+    //Returns true if the game is lost (bomb has been clicked) when called
+    @Override
+    public boolean hasLost() {
+        return hasLost;
+    }
+
+    //return true if the game is won when called! First checks if the game has been lost already, just to make sure that no one cheats.
+    @Override
+    public boolean hasWon() {
+        if(hasLost){return false;}
+        return hasWon;
     }
 }

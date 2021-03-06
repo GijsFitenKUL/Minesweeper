@@ -8,4 +8,5 @@ public interface CellInterface {
     void unsetFlag();
     void setNeighbours(int n);
     int getNeighbours();
+    boolean isBomb();
 }

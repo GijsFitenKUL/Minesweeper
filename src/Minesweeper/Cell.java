@@ -1,5 +1,4 @@
 package Minesweeper;
-import Minesweeper.Board;
 
 public class Cell implements CellInterface {
     private int neighbours;
@@ -44,5 +43,10 @@ public class Cell implements CellInterface {
     @Override
     public int getNeighbours() {
         return this.neighbours;
+    }
+
+    @Override
+    public boolean isBomb() {
+        return false;
     }
 }
