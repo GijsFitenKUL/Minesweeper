@@ -1,6 +1,7 @@
 package Minesweeper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 //import java.util.Arrays;
 
@@ -12,12 +13,12 @@ public class Board implements BoardInterface{
     // private int[] randomXPostition;
     // private int[] randomYPosition;
 
-    //Class constructor, will have Initialise added later!
+    //Class constructor
     public Board(int Width, int Height, int nrOfBombs){
         this.Width = Width;
         this.Height = Height;
         this.nrOfBombs = nrOfBombs;
-        this.currentBoard = new ArrayList<Cell>(Height * Width);
+        this.currentBoard = new ArrayList<>(Height * Width);
         // randomYPosition = new int[Height];
         // randomXPostition = new int[Width];
 
@@ -49,6 +50,13 @@ public class Board implements BoardInterface{
         int i = 0;
         Random r = new Random();
 
+
+        for(int j = 0; j < this.Width * this.Height; j++){
+            Cell c = new Cell();
+            currentBoard.add(c);
+        }
+        System.out.println("Board construction Succesful");
+
         while(i < this.nrOfBombs){
             int index = r.nextInt(this.Width * this.Height);
             if(!(currentBoard.get(index) instanceof Bomb)){
@@ -58,14 +66,10 @@ public class Board implements BoardInterface{
             }
         }
 
-        for(int j = 0; j < this.Width * this.Height; j++){
-            if(!(currentBoard.get(j) instanceof Bomb)){
-                Cell c = new Cell();
-                currentBoard.set(j, c);
-            }
-        }
+        System.out.println("Bombs succesfully placed");
 
         updateBoard();
+        System.out.println("Cell neighbours succesfully updated");
     }
 
     //Update num of neighbours for all cells in the current board
@@ -167,5 +171,27 @@ public class Board implements BoardInterface{
         if(currentBoard.get(pos + this.getHeight() - 1) instanceof Bomb){neighbours++;}
 
         return neighbours;
+    }
+
+    private void consolePrintBoardLine(int row){
+        char character;
+        char[] RowArray = new char[this.Width];
+
+        for(int i = row * Width; i < row * this.Width + this.Width; i++){
+            if(currentBoard.get(i) instanceof Bomb){
+                character = 'B';
+            }else{character = (char)currentBoard.get(i).getNeighbours();}
+            RowArray[i] = character;
+        }
+
+        //String out = Arrays.toString(RowArray);
+        System.out.println(RowArray);
+    }
+
+    @Override
+    public void consolePrintBoard(){
+        for(int i = 0; i < this.Height; i++){
+            consolePrintBoardLine(i);
+        }
     }
 }

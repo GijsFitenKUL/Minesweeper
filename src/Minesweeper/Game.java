@@ -7,8 +7,10 @@ public class Game {
 
     public Game(int width, int height, int nrOfBombs){
         Board gameBoard = new Board(width, height, nrOfBombs);
+        gameBoard.consolePrintBoard();
     }
 
     public static void main(String[] args) {
+        Game newGame = new Game(5, 5, 5);
     }
 }
