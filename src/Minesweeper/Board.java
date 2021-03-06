@@ -246,7 +246,7 @@ public class Board implements BoardInterface{
     public void consolePrintBoard(){
         for(int i = 0; i < this.Height; i++){
             consolePrintBoardLine(i);
-            System.out.println("");
+            System.out.println();
         }
     }
 }
