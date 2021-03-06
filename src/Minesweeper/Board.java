@@ -101,15 +101,27 @@ public class Board implements BoardInterface{
         }
 
         //reveal all connected cells that arent bombs.
-        return revealBoardFromCell(index);
+        return revealBoardFromCell(x, y);
     }
 
     //fucking recursie, anders wordt dit moeilijk.
-    private boolean revealBoardFromCell(int index){
-        boolean done = false;
+    //Ik hoop zo hard dat dit werkt lmao
+    private boolean revealBoardFromCell(int x, int y){
+        if(x >= this.Width){return true;}
+        if(y >= this.Height){return true;}
+        if(x < 0){return true;}
+        if(y < 0){return true;}
 
+        int index = y * this.Width + x;
+        if(this.currentBoard.get(index) instanceof Bomb){return true;}
+        if(!this.currentBoard.get(index).isHidden()){return true;}
 
-        return true;
+        this.currentBoard.get(index).reveal();
+        revealBoardFromCell(x + 1, y);
+        revealBoardFromCell(x - 1, y);
+        revealBoardFromCell(x, y - 1);
+        revealBoardFromCell(x, y + 1);
+        return false;
     }
 
 
