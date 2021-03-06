@@ -10,5 +10,8 @@ public class Game {
     }
 
     public static void main(String[] args) {
+        Board b = new Board(10, 15, 15);
+        b.setBombs();
+
     }
 }

@@ -2,44 +2,45 @@ package Minesweeper;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Arrays;
 
 public class Board implements BoardInterface{
     private int Width;
     private int Height;
     private int nrOfBombs;
     public ArrayList<Cell> currentBoard;
-    private int[] randomXPostition;
-    private int[] randomYPosition;
+    public boolean[] allCells; //array van lengte van alle cellen false = geen bom en true = bom
 
     public Board(int Width, int Height, int nrOfBombs){
         this.Width = Width;
         this.Height = Height;
         this.nrOfBombs = nrOfBombs;
         this.currentBoard = new ArrayList<Cell>(Height * Width);
-        randomYPosition = new int[Height];
-        randomXPostition = new int[Width];
+        this.allCells = new boolean[Height*Width];
     }
 
-    //initialize and shuffleArray() moeten ng getest worden
-    public void initialize(){
-        for(int i = 0; i < getNrOfBombs(); i++){
-            randomXPostition[i] = i;
-            randomYPosition[i] = i;
+    public void setBombs(){  //plaats willekeurig true in de array aantal true = nrOfBombs
+        Random r = new Random();
+        Random r1 = new Random();
+        for(int i = 0; i < nrOfBombs; i++) {
+            int rand = r.nextInt(allCells.length);  // random number to choose the location of the bomb
+            int rand1 = r.nextInt(allCells.length); //second random number
+            if (allCells[rand] == false) { //indien er al een bom op een bepaalde index staat plaats hij een bom adhvh tweede willekeurig getal
+                allCells[rand] = true;
+            } else {
+                allCells[rand1] = true;
+            }
         }
-        shuffleArray(randomXPostition);
-        shuffleArray(randomYPosition);
+        System.out.println("bombs: ");
+        int nrOfBombsInArray = 0;
+        for(boolean bom: allCells){
+            System.out.println(bom);
+            if(bom == true){
+                nrOfBombsInArray++;
+            }
+        }
+        System.out.println("nr of bombs: " + nrOfBombs + "nr of bombs in array: " + nrOfBombsInArray); //controle of er evenveel true is als er nrOfBombs zijn
     }
 
-    public void shuffleArray(int[] array){
-        Random r= new Random();
-        for(int i = 0; i < array.length; i++){
-            int randomIndex = r.nextInt(array.length);
-            int tempValue = array[randomIndex];
-            array[randomIndex] = array[i];
-            array[i] = tempValue;
-        }
-    }
 
     @Override
     public int getWidth() {
