@@ -16,4 +16,5 @@ public interface BoardInterface {
    void firstClick(int index);
    boolean makeMove (int x, int y);
    void consolePrintBoard();
+   void setFlag(int x, int y);
 }

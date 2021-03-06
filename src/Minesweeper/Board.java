@@ -60,19 +60,19 @@ public class Board implements BoardInterface{
     //It chooses a new random index if the first click lands on a bomb.
     @Override
     public void firstClick(int index){
-        if(currentBoard.get(index) instanceof Bomb){
+        if(this.currentBoard.get(index) instanceof Bomb){
             Random r = new Random();
             boolean i = true;
 
             while(i){
                 int newIndex = r.nextInt(this.Width * this.Height);
-                if(!(currentBoard.get(newIndex) instanceof Bomb)){
+                if(!(this.currentBoard.get(newIndex) instanceof Bomb)){
                     //ye olde switcharoo
-                    Cell c = currentBoard.get(newIndex);
-                    Cell b = currentBoard.get(index);
+                    Cell c = this.currentBoard.get(newIndex);
+                    Cell b = this.currentBoard.get(index);
 
-                    currentBoard.set(newIndex, b);
-                    currentBoard.set(index, c);
+                    this.currentBoard.set(newIndex, b);
+                    this.currentBoard.set(index, c);
                     updateNeighbours();
                     i = false;
                 }
@@ -87,7 +87,7 @@ public class Board implements BoardInterface{
         int index = y * this.Width + x;
 
         //check if cell is still hidden
-        if(!currentBoard.get(index).isHidden())
+        if(!this.currentBoard.get(index).isHidden())
             return false;
 
         //check if this is the first move
@@ -96,8 +96,8 @@ public class Board implements BoardInterface{
         }
 
         //Gameover if you hit a bomb
-        if(currentBoard.get(index) instanceof Bomb){
-            ((Bomb) currentBoard.get(index)).gameOver();
+        if(this.currentBoard.get(index) instanceof Bomb){
+            ((Bomb) this.currentBoard.get(index)).gameOver();
         }
 
         //reveal all connected cells that arent bombs.
@@ -169,8 +169,8 @@ public class Board implements BoardInterface{
     //Returns the position in the board array of the given cell, returns -1 if cell is not found.
     @Override
     public int getCellPosition(Cell c) {
-        if(currentBoard.contains(c)){
-            return currentBoard.indexOf(c);
+        if(this.currentBoard.contains(c)){
+            return this.currentBoard.indexOf(c);
         }
         return -1;
     }
@@ -186,85 +186,84 @@ public class Board implements BoardInterface{
         //corner cases
         //NW
         if(pos == 0){
-            if(currentBoard.get(pos + 1) instanceof Bomb){neighbours++;}
-            if(currentBoard.get(pos + this.Width) instanceof Bomb){neighbours++;}
-            if(currentBoard.get(pos + this.Width + 1) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos + 1) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos + this.Width) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos + this.Width + 1) instanceof Bomb){neighbours++;}
             return neighbours;
         }
 
-        //SE
+        //SEthis.
         if(pos == currentBoard.size() - 1){
-            if(currentBoard.get(pos - 1) instanceof Bomb){neighbours++;}
-            if(currentBoard.get(pos - this.Width) instanceof Bomb){neighbours++;}
-            if(currentBoard.get(pos - this.Width - 1) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos - 1) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos - this.Width) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos - this.Width - 1) instanceof Bomb){neighbours++;}
             return neighbours;
         }
 
         //NE
         if(pos == this.Width - 1){
-            if(currentBoard.get(pos - 1) instanceof Bomb){neighbours++;}
-            if(currentBoard.get(pos + this.Width) instanceof Bomb){neighbours++;}
-            if(currentBoard.get(pos + this.Width - 1) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos - 1) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos + this.Width) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos + this.Width - 1) instanceof Bomb){neighbours++;}
             return neighbours;
         }
-
         //SW
         if(pos == this.Width * (this.Height - 1)){
-            if(currentBoard.get(pos + 1) instanceof Bomb){neighbours++;}
-            if(currentBoard.get(pos - this.Width) instanceof Bomb){neighbours++;}
-            if(currentBoard.get(pos - this.Width + 1) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos + 1) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos - this.Width) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos - this.Width + 1) instanceof Bomb){neighbours++;}
             return neighbours;
         }
 
         //edge cases
         //N
         if(pos < this.Width){
-            if(currentBoard.get(pos + 1) instanceof Bomb){neighbours++;}
-            if(currentBoard.get(pos - 1) instanceof Bomb){neighbours++;}
-            if(currentBoard.get(pos + this.Width) instanceof Bomb){neighbours++;}
-            if(currentBoard.get(pos + this.Width + 1) instanceof Bomb){neighbours++;}
-            if(currentBoard.get(pos + this.Width - 1) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos + 1) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos - 1) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos + this.Width) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos + this.Width + 1) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos + this.Width - 1) instanceof Bomb){neighbours++;}
             return neighbours;
         }
 
         //E
         if(pos % (this.Width) == this.Width - 1){
-            if(currentBoard.get(pos - 1) instanceof Bomb){neighbours++;}
-            if(currentBoard.get(pos + this.Width) instanceof Bomb){neighbours++;}
-            if(currentBoard.get(pos + this.Width - 1) instanceof Bomb){neighbours++;}
-            if(currentBoard.get(pos - this.Width) instanceof Bomb){neighbours++;}
-            if(currentBoard.get(pos - this.Width - 1) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos - 1) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos + this.Width) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos + this.Width - 1) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos - this.Width) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos - this.Width - 1) instanceof Bomb){neighbours++;}
             return neighbours;
         }
 
         //W
         if(pos % (this.Width) == 0){
-            if(currentBoard.get(pos + 1) instanceof Bomb){neighbours++;}
-            if(currentBoard.get(pos + this.Width) instanceof Bomb){neighbours++;}
-            if(currentBoard.get(pos + this.Width + 1) instanceof Bomb){neighbours++;}
-            if(currentBoard.get(pos - this.Width) instanceof Bomb){neighbours++;}
-            if(currentBoard.get(pos - this.Width + 1) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos + 1) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos + this.Width) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos + this.Width + 1) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos - this.Width) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos - this.Width + 1) instanceof Bomb){neighbours++;}
             return neighbours;
         }
 
-        //S
+        //Sthis.
         if(pos >= this.Width * (this.Height-1)){
-            if(currentBoard.get(pos + 1) instanceof Bomb){neighbours++;}
-            if(currentBoard.get(pos - 1) instanceof Bomb){neighbours++;}
-            if(currentBoard.get(pos - this.Width) instanceof Bomb){neighbours++;}
-            if(currentBoard.get(pos - this.Width + 1) instanceof Bomb){neighbours++;}
-            if(currentBoard.get(pos - this.Width - 1) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos + 1) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos - 1) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos - this.Width) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos - this.Width + 1) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos - this.Width - 1) instanceof Bomb){neighbours++;}
             return neighbours;
         }
 
-        if(currentBoard.get(pos + 1) instanceof Bomb){neighbours++;}
-        if(currentBoard.get(pos - 1) instanceof Bomb){neighbours++;}
-        if(currentBoard.get(pos + this.Width) instanceof Bomb){neighbours++;}
-        if(currentBoard.get(pos + this.Width + 1) instanceof Bomb){neighbours++;}
-        if(currentBoard.get(pos + this.Width - 1) instanceof Bomb){neighbours++;}
-        if(currentBoard.get(pos - this.Width) instanceof Bomb){neighbours++;}
-        if(currentBoard.get(pos - this.Width + 1) instanceof Bomb){neighbours++;}
-        if(currentBoard.get(pos - this.Width - 1) instanceof Bomb){neighbours++;}
+        if(this.currentBoard.get(pos + 1) instanceof Bomb){neighbours++;}
+        if(this.currentBoard.get(pos - 1) instanceof Bomb){neighbours++;}
+        if(this.currentBoard.get(pos + this.Width) instanceof Bomb){neighbours++;}
+        if(this.currentBoard.get(pos + this.Width + 1) instanceof Bomb){neighbours++;}
+        if(this.currentBoard.get(pos + this.Width - 1) instanceof Bomb){neighbours++;}
+        if(this.currentBoard.get(pos - this.Width) instanceof Bomb){neighbours++;}
+        if(this.currentBoard.get(pos - this.Width + 1) instanceof Bomb){neighbours++;}
+        if(this.currentBoard.get(pos - this.Width - 1) instanceof Bomb){neighbours++;}
 
         return neighbours;
     }
@@ -275,15 +274,15 @@ public class Board implements BoardInterface{
         char[] RowArray = new char[this.Width * 3];
 
         for(int i = row * Width; i < row * this.Width + this.Width; i++){
-            if(currentBoard.get(i) instanceof Bomb){
+            if(this.currentBoard.get(i) instanceof Bomb){
                 character = 'B';
-            }else{character = (char)(currentBoard.get(i).getNeighbours()+'0');}
+            }else{character = (char)(this.currentBoard.get(i).getNeighbours()+'0');}
             RowArray[(i - row*this.Width) * 3] = character;
             RowArray[(i - row*this.Width) * 3 + 1] = ' ';
             RowArray[(i - row*this.Width) * 3 + 2] = ' ';
         }
 
-        //String out = Arrays.toString(RowArray);
+        //String out = Arrays.toString(RowArray);this.
         System.out.println(RowArray);
     }
 
@@ -294,5 +293,11 @@ public class Board implements BoardInterface{
             consolePrintBoardLine(i);
             System.out.println();
         }
+    }
+
+    @Override
+    public void setFlag(int x, int y) {
+        int index = y * this.Width + x;
+        this.currentBoard.get(index).setFlag();
     }
 }
