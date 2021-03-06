@@ -2,7 +2,7 @@ package Minesweeper;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Arrays;
+//import java.util.Arrays;
 
 public class Board implements BoardInterface{
     private int Width;
@@ -58,10 +58,10 @@ public class Board implements BoardInterface{
             }
         }
 
-        for(int i = 0; i < this.Width * this.Height; i++){
-            if(!(currentBoard.get(i) instanceof Bomb)){
+        for(int j = 0; j < this.Width * this.Height; j++){
+            if(!(currentBoard.get(j) instanceof Bomb)){
                 Cell c = new Cell();
-                currentBoard.set(i, c);
+                currentBoard.set(j, c);
             }
         }
 
