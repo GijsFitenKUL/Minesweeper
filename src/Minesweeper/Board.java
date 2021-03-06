@@ -29,7 +29,7 @@ public class Board implements BoardInterface{
             Cell c = new Cell();
             currentBoard.add(c);
         }
-        System.out.println("Board construction Succesful");
+        System.out.println("Board construction succesful");
 
         //replaces certain cell objects with bombs.
         while(i < this.nrOfBombs){
