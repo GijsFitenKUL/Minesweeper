@@ -1,5 +1,5 @@
 package Minesweeper;
-
+//als dit kan lezen werkt het pushen :)
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
