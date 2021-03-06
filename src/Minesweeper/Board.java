@@ -7,6 +7,7 @@ public class Board implements BoardInterface{
     private int Width;
     private int Height;
     private int nrOfBombs;
+    private boolean firstClickMade;
     public ArrayList<Cell> currentBoard;
 
     //Class constructor
@@ -15,6 +16,7 @@ public class Board implements BoardInterface{
         this.Height = Height;
         this.nrOfBombs = nrOfBombs;
         this.currentBoard = new ArrayList<>(Height * Width);
+        this.firstClickMade = false;
 
         initialise();
     }
@@ -76,6 +78,38 @@ public class Board implements BoardInterface{
                 }
             }
         }
+        this.firstClickMade = true;
+    }
+
+    @Override
+    public boolean makeMove(int x, int y) {
+        //get index from x and y coords
+        int index = y * this.Width + x;
+
+        //check if cell is still hidden
+        if(!currentBoard.get(index).isHidden())
+            return false;
+
+        //check if this is the first move
+        if(!this.firstClickMade){
+            firstClick(index);
+        }
+
+        //Gameover if you hit a bomb
+        if(currentBoard.get(index) instanceof Bomb){
+            ((Bomb) currentBoard.get(index)).gameOver();
+        }
+
+        //reveal all connected cells that arent bombs.
+        return revealBoardFromCell(index);
+    }
+
+    //fucking recursie, anders wordt dit moeilijk.
+    private boolean revealBoardFromCell(int index){
+        boolean done = false;
+
+
+        return true;
     }
 
 

@@ -14,5 +14,6 @@ public interface BoardInterface {
    int getCellPosition(Cell c);
    int getCellNeighbours(Cell c);
    void firstClick(int index);
+   boolean makeMove (int x, int y);
    void consolePrintBoard();
 }
