@@ -50,13 +50,14 @@ public class Board implements BoardInterface{
         int i = 0;
         Random r = new Random();
 
-
+        //Creates cell objects on all spots in the board
         for(int j = 0; j < this.Width * this.Height; j++){
             Cell c = new Cell();
             currentBoard.add(c);
         }
         System.out.println("Board construction Succesful");
 
+        //replaces certain cell objects with bombs.
         while(i < this.nrOfBombs){
             int index = r.nextInt(this.Width * this.Height);
             if(!(currentBoard.get(index) instanceof Bomb)){
@@ -161,18 +162,94 @@ public class Board implements BoardInterface{
         int pos = getCellPosition(c);
         if(pos == -1){return -1;}
 
+        //exceptions for edge and corner cells
+        //cornes cases
+        //NW
+        if(pos == 0){
+            if(currentBoard.get(pos + 1) instanceof Bomb){neighbours++;}
+            if(currentBoard.get(pos + this.Width) instanceof Bomb){neighbours++;}
+            if(currentBoard.get(pos + this.Width + 1) instanceof Bomb){neighbours++;}
+            return neighbours;
+        }
+
+        //SE
+        if(pos == currentBoard.size() - 1){
+            if(currentBoard.get(pos - 1) instanceof Bomb){neighbours++;}
+            if(currentBoard.get(pos - this.Width) instanceof Bomb){neighbours++;}
+            if(currentBoard.get(pos - this.Width - 1) instanceof Bomb){neighbours++;}
+            return neighbours;
+        }
+
+        //NE
+        if(pos == this.Width - 1){
+            if(currentBoard.get(pos - 1) instanceof Bomb){neighbours++;}
+            if(currentBoard.get(pos + this.Width) instanceof Bomb){neighbours++;}
+            if(currentBoard.get(pos + this.Width - 1) instanceof Bomb){neighbours++;}
+            return neighbours;
+        }
+
+        //SW
+        if(pos == this.Width * (this.Height - 1)){
+            if(currentBoard.get(pos + 1) instanceof Bomb){neighbours++;}
+            if(currentBoard.get(pos - this.Width) instanceof Bomb){neighbours++;}
+            if(currentBoard.get(pos - this.Width + 1) instanceof Bomb){neighbours++;}
+            return neighbours;
+        }
+
+        //edge cases
+        //N
+        if(pos < this.Width){
+            if(currentBoard.get(pos + 1) instanceof Bomb){neighbours++;}
+            if(currentBoard.get(pos - 1) instanceof Bomb){neighbours++;}
+            if(currentBoard.get(pos + this.Width) instanceof Bomb){neighbours++;}
+            if(currentBoard.get(pos + this.Width + 1) instanceof Bomb){neighbours++;}
+            if(currentBoard.get(pos + this.Width - 1) instanceof Bomb){neighbours++;}
+            return neighbours;
+        }
+
+        //E
+        if(pos % (this.Width) == this.Width - 1){
+            if(currentBoard.get(pos - 1) instanceof Bomb){neighbours++;}
+            if(currentBoard.get(pos + this.Width) instanceof Bomb){neighbours++;}
+            if(currentBoard.get(pos + this.Width - 1) instanceof Bomb){neighbours++;}
+            if(currentBoard.get(pos - this.Width) instanceof Bomb){neighbours++;}
+            if(currentBoard.get(pos - this.Width - 1) instanceof Bomb){neighbours++;}
+            return neighbours;
+        }
+
+        //W
+        if(pos % (this.Width) == 0){
+            if(currentBoard.get(pos + 1) instanceof Bomb){neighbours++;}
+            if(currentBoard.get(pos + this.Width) instanceof Bomb){neighbours++;}
+            if(currentBoard.get(pos + this.Width + 1) instanceof Bomb){neighbours++;}
+            if(currentBoard.get(pos - this.Width) instanceof Bomb){neighbours++;}
+            if(currentBoard.get(pos - this.Width + 1) instanceof Bomb){neighbours++;}
+            return neighbours;
+        }
+
+        //S
+        if(pos >= this.Width * (this.Height-1)){
+            if(currentBoard.get(pos + 1) instanceof Bomb){neighbours++;}
+            if(currentBoard.get(pos - 1) instanceof Bomb){neighbours++;}
+            if(currentBoard.get(pos - this.Width) instanceof Bomb){neighbours++;}
+            if(currentBoard.get(pos - this.Width + 1) instanceof Bomb){neighbours++;}
+            if(currentBoard.get(pos - this.Width - 1) instanceof Bomb){neighbours++;}
+            return neighbours;
+        }
+
         if(currentBoard.get(pos + 1) instanceof Bomb){neighbours++;}
-        if(currentBoard.get(pos + 1) instanceof Bomb){neighbours++;}
-        if(currentBoard.get(pos + this.getWidth()) instanceof Bomb){neighbours++;}
-        if(currentBoard.get(pos + this.getWidth() + 1) instanceof Bomb){neighbours++;}
-        if(currentBoard.get(pos + this.getWidth() - 1) instanceof Bomb){neighbours++;}
-        if(currentBoard.get(pos + this.getHeight()) instanceof Bomb){neighbours++;}
-        if(currentBoard.get(pos + this.getHeight() + 1) instanceof Bomb){neighbours++;}
-        if(currentBoard.get(pos + this.getHeight() - 1) instanceof Bomb){neighbours++;}
+        if(currentBoard.get(pos - 1) instanceof Bomb){neighbours++;}
+        if(currentBoard.get(pos + this.Width) instanceof Bomb){neighbours++;}
+        if(currentBoard.get(pos + this.Width + 1) instanceof Bomb){neighbours++;}
+        if(currentBoard.get(pos + this.Width - 1) instanceof Bomb){neighbours++;}
+        if(currentBoard.get(pos - this.Width) instanceof Bomb){neighbours++;}
+        if(currentBoard.get(pos - this.Width + 1) instanceof Bomb){neighbours++;}
+        if(currentBoard.get(pos - this.Width - 1) instanceof Bomb){neighbours++;}
 
         return neighbours;
     }
 
+    //Prints a single Row of the board to the console sorry for the typecasting lmao
     private void consolePrintBoardLine(int row){
         char character;
         char[] RowArray = new char[this.Width];
@@ -180,14 +257,15 @@ public class Board implements BoardInterface{
         for(int i = row * Width; i < row * this.Width + this.Width; i++){
             if(currentBoard.get(i) instanceof Bomb){
                 character = 'B';
-            }else{character = (char)currentBoard.get(i).getNeighbours();}
-            RowArray[i] = character;
+            }else{character = (char)(currentBoard.get(i).getNeighbours()+'0');}
+            RowArray[i - row*this.Width] = character;
         }
 
         //String out = Arrays.toString(RowArray);
         System.out.println(RowArray);
     }
 
+    //prints the board to console.
     @Override
     public void consolePrintBoard(){
         for(int i = 0; i < this.Height; i++){

@@ -11,6 +11,6 @@ public class Game {
     }
 
     public static void main(String[] args) {
-        Game newGame = new Game(5, 5, 5);
+        Game newGame = new Game(10, 5, 5);
     }
 }
