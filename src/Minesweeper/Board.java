@@ -1,17 +1,13 @@
 package Minesweeper;
 //als dit kan lezen werkt het pushen :)
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
-//import java.util.Arrays;
 
 public class Board implements BoardInterface{
     private int Width;
     private int Height;
     private int nrOfBombs;
     public ArrayList<Cell> currentBoard;
-    // private int[] randomXPostition;
-    // private int[] randomYPosition;
 
     //Class constructor
     public Board(int Width, int Height, int nrOfBombs){
@@ -19,31 +15,9 @@ public class Board implements BoardInterface{
         this.Height = Height;
         this.nrOfBombs = nrOfBombs;
         this.currentBoard = new ArrayList<>(Height * Width);
-        // randomYPosition = new int[Height];
-        // randomXPostition = new int[Width];
 
         initialise();
     }
-
-    //initialize and shuffleArray() moeten ng getest worden
-/*    public void initialize(){
-        for(int i = 0; i < getNrOfBombs(); i++){
-            randomXPostition[i] = i;
-            randomYPosition[i] = i;
-        }
-        shuffleArray(randomXPostition);
-        shuffleArray(randomYPosition);
-    }
-
-    public void shuffleArray(int[] array){
-        Random r= new Random();
-        for(int i = 0; i < array.length; i++){
-            int randomIndex = r.nextInt(array.length);
-            int tempValue = array[randomIndex];
-            array[randomIndex] = array[i];
-            array[i] = tempValue;
-        }
-    }*/
 
     //Iets kortere en efficientere implementatie van de initialise :)
     private void initialise(){
@@ -69,12 +43,12 @@ public class Board implements BoardInterface{
 
         System.out.println("Bombs succesfully placed");
 
-        updateBoard();
+        updateNeighbours();
         System.out.println("Cell neighbours succesfully updated");
     }
 
     //Update num of neighbours for all cells in the current board
-    private void updateBoard(){
+    private void updateNeighbours(){
         for(Cell c : currentBoard){
             c.setNeighbours(getCellNeighbours(c));
         }
@@ -97,7 +71,7 @@ public class Board implements BoardInterface{
 
                     currentBoard.set(newIndex, b);
                     currentBoard.set(index, c);
-                    updateBoard();
+                    updateNeighbours();
                     i = false;
                 }
             }
@@ -163,7 +137,7 @@ public class Board implements BoardInterface{
         if(pos == -1){return -1;}
 
         //exceptions for edge and corner cells
-        //cornes cases
+        //corner cases
         //NW
         if(pos == 0){
             if(currentBoard.get(pos + 1) instanceof Bomb){neighbours++;}
@@ -252,13 +226,15 @@ public class Board implements BoardInterface{
     //Prints a single Row of the board to the console sorry for the typecasting lmao
     private void consolePrintBoardLine(int row){
         char character;
-        char[] RowArray = new char[this.Width];
+        char[] RowArray = new char[this.Width * 3];
 
         for(int i = row * Width; i < row * this.Width + this.Width; i++){
             if(currentBoard.get(i) instanceof Bomb){
                 character = 'B';
             }else{character = (char)(currentBoard.get(i).getNeighbours()+'0');}
-            RowArray[i - row*this.Width] = character;
+            RowArray[(i - row*this.Width) * 3] = character;
+            RowArray[(i - row*this.Width) * 3 + 1] = ' ';
+            RowArray[(i - row*this.Width) * 3 + 2] = ' ';
         }
 
         //String out = Arrays.toString(RowArray);
@@ -270,6 +246,7 @@ public class Board implements BoardInterface{
     public void consolePrintBoard(){
         for(int i = 0; i < this.Height; i++){
             consolePrintBoardLine(i);
+            System.out.println("");
         }
     }
 }

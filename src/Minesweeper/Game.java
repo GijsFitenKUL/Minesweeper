@@ -1,6 +1,6 @@
 package Minesweeper;
 
-public class Game {
+public class Game implements GameInterface{
     public int width;
     public int height;
     public int nrOfBombs;
@@ -10,7 +10,8 @@ public class Game {
         gameBoard.consolePrintBoard();
     }
 
+
     public static void main(String[] args) {
-        Game newGame = new Game(10, 5, 5);
+        Game newGame = new Game(20, 5, 15);
     }
 }
