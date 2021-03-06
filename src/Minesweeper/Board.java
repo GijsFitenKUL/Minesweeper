@@ -8,8 +8,8 @@ public class Board implements BoardInterface{
     private final int nrOfBombs;
     private boolean firstClickMade;
     public ArrayList<Cell> currentBoard;
-    private boolean hasWon = false;
-    private boolean hasLost = false;
+    private boolean hasWon;
+    private boolean hasLost;
 
     //Class constructor
     public Board(int Width, int Height, int nrOfBombs){
@@ -18,6 +18,8 @@ public class Board implements BoardInterface{
         this.nrOfBombs = nrOfBombs;
         this.currentBoard = new ArrayList<>(Height * Width);
         this.firstClickMade = false;
+        this.hasLost = false;
+        this.hasWon = false;
 
         initialise();
     }
@@ -30,16 +32,16 @@ public class Board implements BoardInterface{
         //Creates cell objects on all spots in the board
         for(int j = 0; j < this.Width * this.Height; j++){
             Cell c = new Cell();
-            currentBoard.add(c);
+            this.currentBoard.add(c);
         }
         System.out.println("Board construction succesful");
 
         //replaces certain cell objects with bombs.
         while(i < this.nrOfBombs){
             int index = r.nextInt(this.Width * this.Height);
-            if(!(currentBoard.get(index) instanceof Bomb)){
+            if(!(this.currentBoard.get(index).isBomb())){
                 Bomb b = new Bomb();
-                currentBoard.set(index, b);
+                this.currentBoard.set(index, b);
                 i++;
             }
         }
@@ -49,7 +51,7 @@ public class Board implements BoardInterface{
 
     //Update num of neighbours for all cells in the current board
     private void updateNeighbours(){
-        for(Cell c : currentBoard){
+        for(Cell c : this.currentBoard){
             c.setNeighbours(getCellNeighbours(c));
         }
     }
@@ -57,26 +59,22 @@ public class Board implements BoardInterface{
     //handles the first click, and changes the board accordingly.
     //It chooses a new random index if the first click lands on a bomb.
     @Override
-    public void firstClick(int index){
-        if(this.currentBoard.get(index) instanceof Bomb){
+    public void firstClick(int Oldindex){
+        if(this.currentBoard.get(Oldindex).isBomb()){
             Random r = new Random();
             boolean i = true;
 
             while(i){
                 int newIndex = r.nextInt(this.Width * this.Height);
-                if(!(this.currentBoard.get(newIndex) instanceof Bomb)){
+                if(!(this.currentBoard.get(newIndex).isBomb())){
                     //ye olde switcharoo
-                    Cell c = this.currentBoard.get(newIndex);
-                    Cell b = this.currentBoard.get(index);
-
-                    this.currentBoard.set(newIndex, b);
-                    this.currentBoard.set(index, c);
+                    this.currentBoard.set(newIndex, new Bomb());
+                    this.currentBoard.set(Oldindex, new Cell());
                     updateNeighbours();
                     i = false;
                 }
             }
         }
-        this.firstClickMade = true;
         System.out.println("First move made");
     }
 
@@ -95,14 +93,18 @@ public class Board implements BoardInterface{
         }
 
         //Gameover if you hit a bomb
-        if(this.currentBoard.get(index) instanceof Bomb){
-            this.revealAllBombs();
-            hasLost = ((Bomb) this.currentBoard.get(index)).gameOver();
+        if(this.firstClickMade){
+            if(this.currentBoard.get(index).isBomb()){
+                this.revealAllBombs();
+                this.hasLost = true;
+                System.out.println("Hi");
+            }
         }
 
         //reveal all connected cells that arent bombs. then checks for win conditions
         revealBoardFromCell(x, y);
         testForWin();
+        this.firstClickMade = true;
     }
 
     //tests all win condition:
@@ -110,12 +112,12 @@ public class Board implements BoardInterface{
     // - No non bomb cells are flagged
     // - All bombs are flagged.
     private void testForWin() {
-        for(Cell c : currentBoard){
+        for(Cell c : this.currentBoard){
             if(c.isHidden() && !c.isBomb()){return;}
             if(c.isFlag() && !c.isBomb()){return;}
             if(!c.isFlag() && c.isBomb()){return;}
         }
-        hasWon = true;
+        this.hasWon = true;
     }
 
     //fucking recursie, anders wordt dit moeilijk.
@@ -166,84 +168,84 @@ public class Board implements BoardInterface{
         //corner cases
         //NW
         if(pos == 0){
-            if(this.currentBoard.get(pos + 1) instanceof Bomb){neighbours++;}
-            if(this.currentBoard.get(pos + this.Width) instanceof Bomb){neighbours++;}
-            if(this.currentBoard.get(pos + this.Width + 1) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos + 1).isBomb()){neighbours++;}
+            if(this.currentBoard.get(pos + this.Width).isBomb()){neighbours++;}
+            if(this.currentBoard.get(pos + this.Width + 1).isBomb()){neighbours++;}
             return neighbours;
         }
 
         //SEthis.
-        if(pos == currentBoard.size() - 1){
-            if(this.currentBoard.get(pos - 1) instanceof Bomb){neighbours++;}
-            if(this.currentBoard.get(pos - this.Width) instanceof Bomb){neighbours++;}
-            if(this.currentBoard.get(pos - this.Width - 1) instanceof Bomb){neighbours++;}
+        if(pos == this.currentBoard.size() - 1){
+            if(this.currentBoard.get(pos - 1).isBomb()){neighbours++;}
+            if(this.currentBoard.get(pos - this.Width).isBomb()){neighbours++;}
+            if(this.currentBoard.get(pos - this.Width - 1).isBomb()){neighbours++;}
             return neighbours;
         }
 
         //NE
         if(pos == this.Width - 1){
-            if(this.currentBoard.get(pos - 1) instanceof Bomb){neighbours++;}
-            if(this.currentBoard.get(pos + this.Width) instanceof Bomb){neighbours++;}
-            if(this.currentBoard.get(pos + this.Width - 1) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos - 1).isBomb()){neighbours++;}
+            if(this.currentBoard.get(pos + this.Width).isBomb()){neighbours++;}
+            if(this.currentBoard.get(pos + this.Width - 1).isBomb()){neighbours++;}
             return neighbours;
         }
         //SW
         if(pos == this.Width * (this.Height - 1)){
-            if(this.currentBoard.get(pos + 1) instanceof Bomb){neighbours++;}
-            if(this.currentBoard.get(pos - this.Width) instanceof Bomb){neighbours++;}
-            if(this.currentBoard.get(pos - this.Width + 1) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos + 1).isBomb()){neighbours++;}
+            if(this.currentBoard.get(pos - this.Width).isBomb()){neighbours++;}
+            if(this.currentBoard.get(pos - this.Width + 1).isBomb()){neighbours++;}
             return neighbours;
         }
 
         //edge cases
         //N
         if(pos < this.Width){
-            if(this.currentBoard.get(pos + 1) instanceof Bomb){neighbours++;}
-            if(this.currentBoard.get(pos - 1) instanceof Bomb){neighbours++;}
-            if(this.currentBoard.get(pos + this.Width) instanceof Bomb){neighbours++;}
-            if(this.currentBoard.get(pos + this.Width + 1) instanceof Bomb){neighbours++;}
-            if(this.currentBoard.get(pos + this.Width - 1) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos + 1).isBomb()){neighbours++;}
+            if(this.currentBoard.get(pos - 1).isBomb()){neighbours++;}
+            if(this.currentBoard.get(pos + this.Width).isBomb()){neighbours++;}
+            if(this.currentBoard.get(pos + this.Width + 1).isBomb()){neighbours++;}
+            if(this.currentBoard.get(pos + this.Width - 1).isBomb()){neighbours++;}
             return neighbours;
         }
 
         //E
         if(pos % (this.Width) == this.Width - 1){
-            if(this.currentBoard.get(pos - 1) instanceof Bomb){neighbours++;}
-            if(this.currentBoard.get(pos + this.Width) instanceof Bomb){neighbours++;}
-            if(this.currentBoard.get(pos + this.Width - 1) instanceof Bomb){neighbours++;}
-            if(this.currentBoard.get(pos - this.Width) instanceof Bomb){neighbours++;}
-            if(this.currentBoard.get(pos - this.Width - 1) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos - 1).isBomb()){neighbours++;}
+            if(this.currentBoard.get(pos + this.Width).isBomb()){neighbours++;}
+            if(this.currentBoard.get(pos + this.Width - 1).isBomb()){neighbours++;}
+            if(this.currentBoard.get(pos - this.Width).isBomb()){neighbours++;}
+            if(this.currentBoard.get(pos - this.Width - 1).isBomb()){neighbours++;}
             return neighbours;
         }
 
         //W
         if(pos % (this.Width) == 0){
-            if(this.currentBoard.get(pos + 1) instanceof Bomb){neighbours++;}
-            if(this.currentBoard.get(pos + this.Width) instanceof Bomb){neighbours++;}
-            if(this.currentBoard.get(pos + this.Width + 1) instanceof Bomb){neighbours++;}
-            if(this.currentBoard.get(pos - this.Width) instanceof Bomb){neighbours++;}
-            if(this.currentBoard.get(pos - this.Width + 1) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos + 1).isBomb()){neighbours++;}
+            if(this.currentBoard.get(pos + this.Width).isBomb()){neighbours++;}
+            if(this.currentBoard.get(pos + this.Width + 1).isBomb()){neighbours++;}
+            if(this.currentBoard.get(pos - this.Width).isBomb()){neighbours++;}
+            if(this.currentBoard.get(pos - this.Width + 1).isBomb()){neighbours++;}
             return neighbours;
         }
 
-        //Sthis.
+        //S
         if(pos >= this.Width * (this.Height-1)){
-            if(this.currentBoard.get(pos + 1) instanceof Bomb){neighbours++;}
-            if(this.currentBoard.get(pos - 1) instanceof Bomb){neighbours++;}
-            if(this.currentBoard.get(pos - this.Width) instanceof Bomb){neighbours++;}
-            if(this.currentBoard.get(pos - this.Width + 1) instanceof Bomb){neighbours++;}
-            if(this.currentBoard.get(pos - this.Width - 1) instanceof Bomb){neighbours++;}
+            if(this.currentBoard.get(pos + 1).isBomb()){neighbours++;}
+            if(this.currentBoard.get(pos - 1).isBomb()){neighbours++;}
+            if(this.currentBoard.get(pos - this.Width).isBomb()){neighbours++;}
+            if(this.currentBoard.get(pos - this.Width + 1).isBomb()){neighbours++;}
+            if(this.currentBoard.get(pos - this.Width - 1).isBomb()){neighbours++;}
             return neighbours;
         }
 
-        if(this.currentBoard.get(pos + 1) instanceof Bomb){neighbours++;}
-        if(this.currentBoard.get(pos - 1) instanceof Bomb){neighbours++;}
-        if(this.currentBoard.get(pos + this.Width) instanceof Bomb){neighbours++;}
-        if(this.currentBoard.get(pos + this.Width + 1) instanceof Bomb){neighbours++;}
-        if(this.currentBoard.get(pos + this.Width - 1) instanceof Bomb){neighbours++;}
-        if(this.currentBoard.get(pos - this.Width) instanceof Bomb){neighbours++;}
-        if(this.currentBoard.get(pos - this.Width + 1) instanceof Bomb){neighbours++;}
-        if(this.currentBoard.get(pos - this.Width - 1) instanceof Bomb){neighbours++;}
+        if(this.currentBoard.get(pos + 1).isBomb()){neighbours++;}
+        if(this.currentBoard.get(pos - 1).isBomb()){neighbours++;}
+        if(this.currentBoard.get(pos + this.Width).isBomb()){neighbours++;}
+        if(this.currentBoard.get(pos + this.Width + 1).isBomb()){neighbours++;}
+        if(this.currentBoard.get(pos + this.Width - 1).isBomb()){neighbours++;}
+        if(this.currentBoard.get(pos - this.Width).isBomb()){neighbours++;}
+        if(this.currentBoard.get(pos - this.Width + 1).isBomb()){neighbours++;}
+        if(this.currentBoard.get(pos - this.Width - 1).isBomb()){neighbours++;}
 
         return neighbours;
     }
@@ -272,13 +274,13 @@ public class Board implements BoardInterface{
     //Returns true if the game is lost (bomb has been clicked) when called
     @Override
     public boolean hasLost() {
-        return hasLost;
+        return this.hasLost;
     }
 
     //return true if the game is won when called! First checks if the game has been lost already, just to make sure that no one cheats.
     @Override
     public boolean hasWon() {
-        if(hasLost){return false;}
-        return hasWon;
+        if(this.hasLost){return false;}
+        return this.hasWon;
     }
 }
