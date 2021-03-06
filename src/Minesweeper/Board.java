@@ -99,6 +99,7 @@ public class Board implements BoardInterface{
 
         //Gameover if you hit a bomb
         if(this.currentBoard.get(index) instanceof Bomb){
+            this.revealAllBombs();
             ((Bomb) this.currentBoard.get(index)).gameOver();
         }
 
@@ -112,22 +113,27 @@ public class Board implements BoardInterface{
 
     //fucking recursie, anders wordt dit moeilijk.
     //Ik hoop zo hard dat dit werkt lmao
-    private boolean revealBoardFromCell(int x, int y){
-        if(x >= this.Width){return true;}
-        if(y >= this.Height){return true;}
-        if(x < 0){return true;}
-        if(y < 0){return true;}
+    private void revealBoardFromCell(int x, int y){
+        if(x >= this.Width){return;}
+        if(y >= this.Height){return;}
+        if(x < 0){return;}
+        if(y < 0){return;}
 
         int index = y * this.Width + x;
-        if(this.currentBoard.get(index) instanceof Bomb){return true;}
-        if(!this.currentBoard.get(index).isHidden()){return true;}
+        if(this.currentBoard.get(index) instanceof Bomb){return;}
+        if(!this.currentBoard.get(index).isHidden()){return;}
 
         this.currentBoard.get(index).reveal();
         revealBoardFromCell(x + 1, y);
         revealBoardFromCell(x - 1, y);
         revealBoardFromCell(x, y - 1);
         revealBoardFromCell(x, y + 1);
-        return false;
+    }
+
+    private void revealAllBombs(){
+        for(Cell c : this.currentBoard){
+            if(c instanceof Bomb){c.reveal();}
+        }
     }
 
 
@@ -280,15 +286,15 @@ public class Board implements BoardInterface{
         char[] RowArray = new char[this.Width * 3];
 
         for(int i = row * Width; i < row * this.Width + this.Width; i++){
-            if(this.currentBoard.get(i) instanceof Bomb){
-                character = 'B';
-            }else{character = (char)(this.currentBoard.get(i).getNeighbours()+'0');}
+            if(this.currentBoard.get(i).isFlag()){character = 'F';}
+            else if(this.currentBoard.get(i).isHidden()){character = 'X';}
+            else if(this.currentBoard.get(i) instanceof Bomb){ character = 'B'; }
+            else{character = (char)(this.currentBoard.get(i).getNeighbours()+'0');}
             RowArray[(i - row*this.Width) * 3] = character;
             RowArray[(i - row*this.Width) * 3 + 1] = ' ';
             RowArray[(i - row*this.Width) * 3 + 2] = ' ';
         }
 
-        //String out = Arrays.toString(RowArray);this.
         System.out.println(RowArray);
     }
 

@@ -13,8 +13,9 @@ public class Game implements GameInterface{
 
 
     public static void main(String[] args) {
-        Game newGame = new Game(20, 5, 15);
+        Game newGame = new Game(20, 5, 50);
         newGame.makeMove(4, 3);
+        newGame.makeMove(16, 4);
     }
 
     @Override
