@@ -2,17 +2,17 @@ package JavaFX;
 
 import Minesweeper.Game;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+
+import java.util.Optional;
 
 public class Main extends Application {
 
@@ -159,7 +159,11 @@ public class Main extends Application {
                             alert.setHeaderText("You lost the game");
                             alert.setContentText("Oops, you clicked on a bomb! Restart the program to try again");
 
-                            alert.showAndWait();
+                            Optional<ButtonType> result = alert.showAndWait();
+                            if(result.isEmpty()){
+                                Platform.exit();
+                                System.exit(0);
+                            }else if(result.get() == ButtonType.OK){window.setScene(startingScreen);}
                         }
 
                         if (playingGame.hasWon()) {
@@ -168,7 +172,11 @@ public class Main extends Application {
                             alert.setHeaderText("You Won the game!");
                             alert.setContentText("Great job! If you want a bigger challenge, restart the program and increase the size and number of bombs!");
 
-                            alert.showAndWait();
+                            Optional<ButtonType> result = alert.showAndWait();
+                            if(result.isEmpty()){
+                                Platform.exit();
+                                System.exit(0);
+                            }else if(result.get() == ButtonType.OK){window.setScene(startingScreen);}
                         }
                     });
 
