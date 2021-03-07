@@ -99,7 +99,6 @@ public class Main extends Application {
                         if (mouseEvent.getButton() == MouseButton.PRIMARY) {
 
                             playingGame.makeMove(xCell, yCell);
-                            playingGame.makeMove(4, 3);
 
                         } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
                             playingGame.setFlag(xCell, yCell);

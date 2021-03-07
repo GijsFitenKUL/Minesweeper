@@ -58,25 +58,6 @@ public class Board implements BoardInterface{
 
     //handles the first click, and changes the board accordingly.
     //It chooses a new random index if the first click lands on a bomb.
-    @Override
-    public void firstClick(int Oldindex){
-        if(this.currentBoard.get(Oldindex).isBomb()){
-            Random r = new Random();
-            boolean i = true;
-
-            while(i){
-                int newIndex = r.nextInt(this.Width * this.Height);
-                if(!(this.currentBoard.get(newIndex).isBomb())){
-                    //ye olde switcharoo
-                    this.currentBoard.set(newIndex, new Bomb());
-                    this.currentBoard.set(Oldindex, new Cell());
-                    updateNeighbours();
-                    i = false;
-                }
-            }
-        }
-        System.out.println("First move made");
-    }
 
     @Override
     public void makeMove(int x, int y) {
@@ -89,22 +70,37 @@ public class Board implements BoardInterface{
 
         //check if this is the first move
         if(!this.firstClickMade){
-            firstClick(index);
+            if(this.currentBoard.get(index).isBomb()){
+                Random r = new Random();
+                boolean i = true;
+
+                while(i){
+                    int newIndex = r.nextInt(this.Width * this.Height);
+                    if(!(this.currentBoard.get(newIndex).isBomb())){
+                        //ye olde switcharoo
+                        this.currentBoard.set(newIndex, new Bomb());
+                        this.currentBoard.set(index, new Cell());
+                        updateNeighbours();
+                        i = false;
+                        System.out.println("Bomb switched at first click");
+                    }
+                }
+            }
+            this.firstClickMade = true;
         }
 
         //Gameover if you hit a bomb
-        if(this.firstClickMade){
-            if(this.currentBoard.get(index).isBomb()){
-                this.revealAllBombs();
-                this.hasLost = true;
-                System.out.println("Hi");
-            }
+
+        if(this.currentBoard.get(index).isBomb()){
+            this.revealAllBombs();
+            this.hasLost = true;
+            System.out.println("Bomb clicked!");
         }
+
 
         //reveal all connected cells that arent bombs. then checks for win conditions
         revealBoardFromCell(x, y);
         testForWin();
-        this.firstClickMade = true;
     }
 
     //tests all win condition:
